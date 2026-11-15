@@ -10,116 +10,145 @@
 body{
 margin:0;
 font-family:Arial,sans-serif;
-background:#0b1020;
+background:#080808;
 color:white;
 }
 header{
-background:#151d32;
-padding:22px;
+background:#111;
+padding:25px 12px;
 text-align:center;
-border-bottom:2px solid #16c784;
+border-bottom:3px solid #d4af37;
 }
-header h1{color:#16c784;margin:0}
-header p{color:#ccc}
-.container{padding:20px}
-.hero{
-background:linear-gradient(135deg,#173b49,#24204a);
-padding:30px 20px;
-border-radius:15px;
-text-align:center;
-}
-.hero h2{font-size:27px}
-.hero p{color:#ddd}
-.services{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:14px;
-margin-top:25px;
-}
-.service{
-background:#18233b;
-padding:20px 10px;
+h1{color:#d4af37;margin:0;font-size:30px}
+header p{color:#ddd}
+.container{padding:18px;max-width:600px;margin:auto}
+.card{
+background:#171717;
+border:1px solid #d4af37;
 border-radius:12px;
-text-align:center;
-border:1px solid #30405b;
+padding:18px;
+margin:15px 0;
 }
-.service h3{color:#16c784}
+h2{color:#d4af37;text-align:center}
+label{display:block;margin:12px 0 6px}
+input,select{
+width:100%;
+padding:13px;
+border-radius:7px;
+border:1px solid #d4af37;
+background:#090909;
+color:white;
+font-size:16px;
+}
 button{
-background:#16c784;
-color:#06130e;
+width:100%;
+padding:14px;
+background:#d4af37;
+color:#080808;
 border:0;
-padding:12px 18px;
 border-radius:8px;
 font-weight:bold;
+font-size:16px;
+margin-top:15px;
 }
-.contact{
-margin-top:25px;
-background:#18233b;
-padding:22px;
-border-radius:12px;
-text-align:center;
+.price{
+display:flex;
+justify-content:space-between;
+border-bottom:1px solid #444;
+padding:12px 0;
 }
-footer{
-text-align:center;
-padding:25px;
-color:#aaa;
-}
+footer{text-align:center;padding:25px;color:#aaa}
 </style>
 </head>
 <body>
 
 <header>
-<h1>MAJITU PANEL</h1>
-<p>Social Media Services</p>
+<h1>🔥 MAJITU PANEL 🔥</h1>
+<p>Huduma za Mitandao ya Kijamii</p>
 </header>
 
 <div class="container">
 
-<div class="hero">
-<h2>WELCOME TO MAJITU PANEL</h2>
-<p>Huduma za mitandao ya kijamii sehemu moja.</p>
-<button onclick="document.getElementById('services').scrollIntoView()">
-ANGALIA HUDUMA
-</button>
+<div class="card">
+<h2>Karibu MAJITU PANEL</h2>
+<p style="text-align:center">
+Chagua huduma unayotaka na tuma oda yako.
+</p>
 </div>
 
-<h2 id="services">Huduma Zetu</h2>
+<div class="card">
+<h2>🔥 BEI ZA FOLLOWERS 🔥</h2>
 
-<div class="services">
-
-<div class="service">
-<h3>📸 Instagram</h3>
-<p>Promotion na usimamizi wa akaunti.</p>
+<div class="price"><b>Instagram Followers</b><span>Weka bei</span></div>
+<div class="price"><b>Facebook Followers</b><span>Weka bei</span></div>
+<div class="price"><b>TikTok Followers</b><span>Weka bei</span></div>
+<div class="price"><b>Instagram Likes</b><span>Weka bei</span></div>
+<div class="price"><b>TikTok Likes</b><span>Weka bei</span></div>
+<div class="price"><b>Facebook Likes</b><span>Weka bei</span></div>
+<div class="price"><b>Instagram Views</b><span>Weka bei</span></div>
+<div class="price"><b>TikTok Views</b><span>Weka bei</span></div>
+<div class="price"><b>Facebook Views</b><span>Weka bei</span></div>
 </div>
 
-<div class="service">
-<h3>🎵 TikTok</h3>
-<p>Promotion na ushauri wa maudhui.</p>
-</div>
+<div class="card">
+<h2>🛒 WEKA ODA YAKO</h2>
 
-<div class="service">
-<h3>📘 Facebook</h3>
-<p>Matangazo na usimamizi wa ukurasa.</p>
-</div>
+<label>Jina lako</label>
+<input id="name" placeholder="Andika jina lako">
 
-<div class="service">
-<h3>💬 WhatsApp</h3>
-<p>Huduma za biashara na matangazo.</p>
-</div>
+<label>Chagua mtandao</label>
+<select id="network">
+<option>Instagram</option>
+<option>Facebook</option>
+<option>TikTok</option>
+</select>
 
-</div>
+<label>Chagua huduma</label>
+<select id="service">
+<option>Followers</option>
+<option>Likes</option>
+<option>Views</option>
+</select>
 
-<div class="contact">
-<h2>Wasiliana Nasi</h2>
-<p>Karibu MAJITU PANEL kwa huduma zetu.</p>
-<p>Bei na maelezo ya huduma zitapatikana hapa.</p>
+<label>Link ya akaunti yako</label>
+<input id="account" placeholder="Weka link ya akaunti">
+
+<label>Kiasi unachohitaji</label>
+<input id="quantity" type="number" placeholder="Mfano 1000">
+
+<button onclick="sendOrder()">TUMA ODA WHATSAPP</button>
 </div>
 
 </div>
 
 <footer>
-© 2026 MAJITU PANEL. All Rights Reserved.
+© 2026 MAJITU PANEL
+<br>Huduma bora kwa wateja wetu.
 </footer>
+
+<script>
+function sendOrder(){
+let name=document.getElementById('name').value;
+let network=document.getElementById('network').value;
+let service=document.getElementById('service').value;
+let account=document.getElementById('account').value;
+let quantity=document.getElementById('quantity').value;
+
+if(!name||!account||!quantity||Number(quantity)<=0){
+alert("Tafadhali jaza taarifa zote");
+return;
+}
+
+let message="MAJITU PANEL ODA%0A"+
+"Jina: "+encodeURIComponent(name)+"%0A"+
+"Mtandao: "+encodeURIComponent(network)+"%0A"+
+"Huduma: "+encodeURIComponent(service)+"%0A"+
+"Link: "+encodeURIComponent(account)+"%0A"+
+"Kiasi: "+encodeURIComponent(quantity);
+
+window.open("https://wa.me/255768130923?text="+message,"_blank");
+}
+</script>
 
 </body>
 </html>
