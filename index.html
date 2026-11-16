@@ -150,5 +150,26 @@ window.open("https://wa.me/255768130923?text="+message,"_blank");
 }
 </script>
 
+<!-- FIREBASE CONNECTION - MAJITU PANEL -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCo4VE_3AsxMwI7b5IE1fCjpmF-j3hi_Xc",
+  authDomain: "majitu-panel.firebaseapp.com",
+  projectId: "majitu-panel",
+  storageBucket: "majitu-panel.firebasestorage.app",
+  messagingSenderId: "72060971480",
+  appId: "1:72060971480:web:94adcb30dee3563b1caaad",
+  measurementId: "G-7F9SZ3DHY1"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+console.log("MAJITU PANEL Firebase Connected!");
+</script>
+
 </body>
 </html>
