@@ -171,5 +171,77 @@ const auth = firebase.auth();
 console.log("MAJITU PANEL Firebase Connected!");
 </script>
 
+<!-- MAJITU PANEL LOGIN -->
+<div id="majitu-auth" style="background:#080808;color:#d4af37;padding:25px;border:2px solid #d4af37;border-radius:15px;max-width:400px;margin:25px auto;text-align:center;font-family:Arial;">
+<h2>🔥 MAJITU PANEL 🔥</h2>
+<h3>ACCOUNT LOGIN / REGISTER</h3>
+
+<input id="userEmail" type="email" placeholder="Email Address" style="width:90%;padding:12px;margin:8px;border-radius:7px;">
+
+<input id="userPassword" type="password" placeholder="Password" style="width:90%;padding:12px;margin:8px;border-radius:7px;">
+
+<button onclick="registerUser()" style="background:#d4af37;padding:12px;width:95%;margin:8px;border:0;border-radius:7px;">
+SIGN UP
+</button>
+
+<button onclick="loginUser()" style="background:#d4af37;padding:12px;width:95%;margin:8px;border:0;border-radius:7px;">
+LOGIN
+</button>
+
+<button onclick="resetPassword()" style="background:#222;color:white;padding:10px;width:95%;margin:8px;border:0;border-radius:7px;">
+FORGOT PASSWORD?
+</button>
+
+<p id="authMessage"></p>
+<button onclick="logoutUser()" style="display:none;" id="logoutButton">LOGOUT</button>
+</div>
+
+<script>
+function registerUser() {
+ const email = document.getElementById("userEmail").value;
+ const password = document.getElementById("userPassword").value;
+
+ auth.createUserWithEmailAndPassword(email,password)
+ .then(() => {
+ document.getElementById("authMessage").innerText = "Account created successfully!";
+ })
+ .catch(error => {
+ document.getElementById("authMessage").innerText = error.message;
+ });
+}
+
+function loginUser() {
+ const email = document.getElementById("userEmail").value;
+ const password = document.getElementById("userPassword").value;
+
+ auth.signInWithEmailAndPassword(email,password)
+ .then(() => {
+ document.getElementById("authMessage").innerText = "Welcome to MAJITU PANEL!";
+ })
+ .catch(error => {
+ document.getElementById("authMessage").innerText = error.message;
+ });
+}
+
+function resetPassword() {
+ const email = document.getElementById("userEmail").value;
+ auth.sendPasswordResetEmail(email)
+ .then(() => {
+ document.getElementById("authMessage").innerText = "Reset email sent!";
+ })
+ .catch(error => {
+ document.getElementById("authMessage").innerText = error.message;
+ });
+}
+
+function logoutUser() {
+ auth.signOut();
+}
+
+auth.onAuthStateChanged(user => {
+ document.getElementById("logoutButton").style.display = user ? "block" : "none";
+});
+</script>
+
 </body>
 </html>
