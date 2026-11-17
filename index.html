@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAJITU PANEL</title>
+
 <style>
 *{box-sizing:border-box}
 body{
@@ -19,8 +20,7 @@ padding:25px 12px;
 text-align:center;
 border-bottom:3px solid #d4af37;
 }
-h1{color:#d4af37;margin:0;font-size:30px}
-header p{color:#ddd}
+h1,h2{color:#d4af37;text-align:center}
 .container{padding:18px;max-width:600px;margin:auto}
 .card{
 background:#171717;
@@ -29,11 +29,10 @@ border-radius:12px;
 padding:18px;
 margin:15px 0;
 }
-h2{color:#d4af37;text-align:center}
-label{display:block;margin:12px 0 6px}
 input,select{
 width:100%;
 padding:13px;
+margin:8px 0;
 border-radius:7px;
 border:1px solid #d4af37;
 background:#090909;
@@ -49,7 +48,7 @@ border:0;
 border-radius:8px;
 font-weight:bold;
 font-size:16px;
-margin-top:15px;
+margin-top:12px;
 }
 .price{
 display:flex;
@@ -57,9 +56,15 @@ justify-content:space-between;
 border-bottom:1px solid #444;
 padding:12px 0;
 }
+#dashboard{display:none}
+#authMessage{
+text-align:center;
+overflow-wrap:anywhere;
+}
 footer{text-align:center;padding:25px;color:#aaa}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -67,27 +72,49 @@ footer{text-align:center;padding:25px;color:#aaa}
 <p>Huduma za Mitandao ya Kijamii</p>
 </header>
 
-<div class="container">
+<!-- LOGIN / REGISTER -->
+
+<div class="container" id="authSection">
+<div class="card">
+<h2>ACCOUNT LOGIN / REGISTER</h2>
+
+<input id="userEmail" type="email"
+placeholder="Email Address">
+
+<input id="userPassword" type="password"
+placeholder="Password (angalau herufi 6)">
+
+<button onclick="registerUser()">SIGN UP</button>
+
+<button onclick="loginUser()">LOGIN</button>
+
+<button onclick="resetPassword()"
+style="background:#333;color:white">
+FORGOT PASSWORD?
+</button>
+
+<p id="authMessage"></p>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+
+<div class="container" id="dashboard">
 
 <div class="card">
-<h2>Karibu MAJITU PANEL</h2>
+<h2>🔥 KARIBU MAJITU PANEL 🔥</h2>
 <p style="text-align:center">
-Chagua huduma unayotaka na tuma oda yako.
+Karibu kwenye Dashboard yetu.
 </p>
+<p id="welcomeUser" style="text-align:center"></p>
+<button onclick="logoutUser()">LOGOUT</button>
 </div>
 
 <div class="card">
-<h2>🔥 BEI ZA FOLLOWERS 🔥</h2>
+<h2>🔥 BEI ZA HUDUMA 🔥</h2>
 
-<div class="price"><b>Instagram Followers</b><span>Weka bei</span></div>
-<div class="price"><b>Facebook Followers</b><span>Weka bei</span></div>
-<div class="price"><b>TikTok Followers</b><span>Weka bei</span></div>
-<div class="price"><b>Instagram Likes</b><span>Weka bei</span></div>
-<div class="price"><b>TikTok Likes</b><span>Weka bei</span></div>
-<div class="price"><b>Facebook Likes</b><span>Weka bei</span></div>
-<div class="price"><b>Instagram Views</b><span>Weka bei</span></div>
-<div class="price"><b>TikTok Views</b><span>Weka bei</span></div>
-<div class="price"><b>Facebook Views</b><span>Weka bei</span></div>
+<div id="priceList"></div>
+
 </div>
 
 <div class="card">
@@ -110,15 +137,18 @@ Chagua huduma unayotaka na tuma oda yako.
 <option>Views</option>
 </select>
 
-<label>Link ya akaunti yako</label>
+<label>Link ya akaunti</label>
 <input id="account" placeholder="Weka link ya akaunti">
 
 <label>Kiasi unachohitaji</label>
-<input id="quantity" type="number" placeholder="Mfano 1000">
+<input id="quantity" type="number"
+placeholder="Mfano 1000" min="1">
 
-<button onclick="sendOrder()">TUMA ODA WHATSAPP</button>
+<button onclick="sendOrder()">
+TUMA ODA WHATSAPP
+</button>
+
 </div>
-
 </div>
 
 <footer>
@@ -126,121 +156,212 @@ Chagua huduma unayotaka na tuma oda yako.
 <br>Huduma bora kwa wateja wetu.
 </footer>
 
-<script>
-function sendOrder(){
-let name=document.getElementById('name').value;
-let network=document.getElementById('network').value;
-let service=document.getElementById('service').value;
-let account=document.getElementById('account').value;
-let quantity=document.getElementById('quantity').value;
+<!-- FIREBASE -->
 
-if(!name||!account||!quantity||Number(quantity)<=0){
-alert("Tafadhali jaza taarifa zote");
-return;
-}
-
-let message="MAJITU PANEL ODA%0A"+
-"Jina: "+encodeURIComponent(name)+"%0A"+
-"Mtandao: "+encodeURIComponent(network)+"%0A"+
-"Huduma: "+encodeURIComponent(service)+"%0A"+
-"Link: "+encodeURIComponent(account)+"%0A"+
-"Kiasi: "+encodeURIComponent(quantity);
-
-window.open("https://wa.me/255768130923?text="+message,"_blank");
-}
-</script>
-
-<!-- FIREBASE CONNECTION - MAJITU PANEL -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCo4VE_3AsxMwI7b5IE1fCjpmF-j3hi_Xc",
-  authDomain: "majitu-panel.firebaseapp.com",
-  projectId: "majitu-panel",
-  storageBucket: "majitu-panel.firebasestorage.app",
-  messagingSenderId: "72060971480",
-  appId: "1:72060971480:web:94adcb30dee3563b1caaad",
-  measurementId: "G-7F9SZ3DHY1"
+apiKey: "AIzaSyCo4VE_3AsxMwI7b5IE1fCjpmF-j3hi_Xc",
+authDomain: "majitu-panel.firebaseapp.com",
+projectId: "majitu-panel",
+storageBucket: "majitu-panel.firebasestorage.app",
+messagingSenderId: "72060971480",
+appId: "1:72060971480:web:94adcb30dee3563b1caaad",
+measurementId: "G-7F9SZ3DHY1"
 };
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-console.log("MAJITU PANEL Firebase Connected!");
-</script>
+// BEI ZA HUDUMA
+// Badilisha Weka bei na bei zako.
 
-<!-- MAJITU PANEL LOGIN -->
-<div id="majitu-auth" style="background:#080808;color:#d4af37;padding:25px;border:2px solid #d4af37;border-radius:15px;max-width:400px;margin:25px auto;text-align:center;font-family:Arial;">
-<h2>🔥 MAJITU PANEL 🔥</h2>
-<h3>ACCOUNT LOGIN / REGISTER</h3>
+const prices = [
+["Instagram Followers","Weka bei"],
+["Facebook Followers","Weka bei"],
+["TikTok Followers","Weka bei"],
+["Instagram Likes","Weka bei"],
+["TikTok Likes","Weka bei"],
+["Facebook Likes","Weka bei"],
+["Instagram Views","Weka bei"],
+["TikTok Views","Weka bei"],
+["Facebook Views","Weka bei"]
+];
 
-<input id="userEmail" type="email" placeholder="Email Address" style="width:90%;padding:12px;margin:8px;border-radius:7px;">
+document.getElementById("priceList").innerHTML =
+prices.map(item =>
+`<div class="price">
+<b>${item[0]}</b>
+<span>${item[1]}</span>
+</div>`
+).join("");
 
-<input id="userPassword" type="password" placeholder="Password" style="width:90%;padding:12px;margin:8px;border-radius:7px;">
+// REGISTER
 
-<button onclick="registerUser()" style="background:#d4af37;padding:12px;width:95%;margin:8px;border:0;border-radius:7px;">
-SIGN UP
-</button>
+function registerUser(){
 
-<button onclick="loginUser()" style="background:#d4af37;padding:12px;width:95%;margin:8px;border:0;border-radius:7px;">
-LOGIN
-</button>
+const email =
+document.getElementById("userEmail").value.trim();
 
-<button onclick="resetPassword()" style="background:#222;color:white;padding:10px;width:95%;margin:8px;border:0;border-radius:7px;">
-FORGOT PASSWORD?
-</button>
+const password =
+document.getElementById("userPassword").value;
 
-<p id="authMessage"></p>
-<button onclick="logoutUser()" style="display:none;" id="logoutButton">LOGOUT</button>
-</div>
+const message =
+document.getElementById("authMessage");
 
-<script>
-function registerUser() {
- const email = document.getElementById("userEmail").value;
- const password = document.getElementById("userPassword").value;
-
- auth.createUserWithEmailAndPassword(email,password)
- .then(() => {
- document.getElementById("authMessage").innerText = "Account created successfully!";
- })
- .catch(error => {
- document.getElementById("authMessage").innerText = error.message;
- });
+if(!email || !password){
+message.innerText="Jaza email na password.";
+return;
 }
 
-function loginUser() {
- const email = document.getElementById("userEmail").value;
- const password = document.getElementById("userPassword").value;
+auth.createUserWithEmailAndPassword(email,password)
 
- auth.signInWithEmailAndPassword(email,password)
- .then(() => {
- document.getElementById("authMessage").innerText = "Welcome to MAJITU PANEL!";
- })
- .catch(error => {
- document.getElementById("authMessage").innerText = error.message;
- });
-}
+.then(()=>{
+message.innerText="Akaunti imetengenezwa!";
+})
 
-function resetPassword() {
- const email = document.getElementById("userEmail").value;
- auth.sendPasswordResetEmail(email)
- .then(() => {
- document.getElementById("authMessage").innerText = "Reset email sent!";
- })
- .catch(error => {
- document.getElementById("authMessage").innerText = error.message;
- });
-}
-
-function logoutUser() {
- auth.signOut();
-}
-
-auth.onAuthStateChanged(user => {
- document.getElementById("logoutButton").style.display = user ? "block" : "none";
+.catch(error=>{
+message.innerText=error.message;
 });
+
+}
+
+// LOGIN
+
+function loginUser(){
+
+const email =
+document.getElementById("userEmail").value.trim();
+
+const password =
+document.getElementById("userPassword").value;
+
+const message =
+document.getElementById("authMessage");
+
+if(!email || !password){
+message.innerText="Jaza email na password.";
+return;
+}
+
+auth.signInWithEmailAndPassword(email,password)
+
+.catch(error=>{
+message.innerText=error.message;
+});
+
+}
+
+// FORGOT PASSWORD
+
+function resetPassword(){
+
+const email =
+document.getElementById("userEmail").value.trim();
+
+const message =
+document.getElementById("authMessage");
+
+if(!email){
+message.innerText="Weka email yako kwanza.";
+return;
+}
+
+auth.sendPasswordResetEmail(email)
+
+.then(()=>{
+message.innerText="Email ya kubadilisha password imetumwa.";
+})
+
+.catch(error=>{
+message.innerText=error.message;
+});
+
+}
+
+// LOGOUT
+
+function logoutUser(){
+auth.signOut();
+}
+
+// AUTHENTICATION CHECK
+
+auth.onAuthStateChanged(user=>{
+
+const authSection =
+document.getElementById("authSection");
+
+const dashboard =
+document.getElementById("dashboard");
+
+if(user){
+
+authSection.style.display="none";
+dashboard.style.display="block";
+
+document.getElementById("welcomeUser").innerText =
+"Umeingia kama: "+user.email;
+
+}else{
+
+authSection.style.display="block";
+dashboard.style.display="none";
+
+}
+
+});
+
+// WHATSAPP ORDER
+
+function sendOrder(){
+
+const name =
+document.getElementById("name").value.trim();
+
+const network =
+document.getElementById("network").value;
+
+const service =
+document.getElementById("service").value;
+
+const account =
+document.getElementById("account").value.trim();
+
+const quantity =
+document.getElementById("quantity").value;
+
+if(!auth.currentUser){
+alert("Tafadhali ingia kwanza.");
+return;
+}
+
+if(!name || !account || !quantity ||
+Number(quantity)<=0){
+alert("Tafadhali jaza taarifa zote.");
+return;
+}
+
+const message =
+"MAJITU PANEL ODA\n"+
+"Jina: "+name+"\n"+
+"Email: "+auth.currentUser.email+"\n"+
+"Mtandao: "+network+"\n"+
+"Huduma: "+service+"\n"+
+"Link: "+account+"\n"+
+"Kiasi: "+quantity;
+
+const url =
+"https://wa.me/255768130923?text="+
+encodeURIComponent(message);
+
+window.open(url,"_blank");
+
+}
+
 </script>
 
 </body>
